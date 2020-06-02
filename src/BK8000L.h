@@ -14,11 +14,8 @@
 
 #ifndef BK8000L_h
 #define BK8000L_h
-#include <Arduino.h>
 
-#define USE_SW_SERIAL 0
-
-//#define DEBUG
+#define DEBUG 1
 
 //cmds definitions:
 #define BK8000L_PAIRING_INIT "CA"            //  pairing   AT+CA\r\n     
@@ -52,17 +49,6 @@
 #define BK8000L_MUSIC_GET_STATUS "MV "       //  Bluetooth playback status inquiry   AT+MV\r\n   Play: "MB\r\n", time out:"MA\r\n", disconnect:" M0\r\n"   
 #define BK8000L_GET_HFP_STATUS "MY"          //  Bluetooth inquiry HFP status  AT+MY\r\n   disconnect:"M0\r\n", connection:"M1\r\n", Caller: "M2\r\n", Outgoing: "M3\r\n", calling:"M4\r\n"  
 
-
-
-#if defined(USE_SW_SERIAL)
-#if ARDUINO >= 100
-#include <SoftwareSerial.h>
-#else
-#include <NewSoftSerial.h>
-#endif
-#endif
-
-
 class BK8000L
 {
   public:
@@ -93,15 +79,7 @@ class BK8000L
     String BT_NAME;
     String BT_PIN;
 
-#if defined(USE_SW_SERIAL)
-#if ARDUINO >= 100
-    BK8000L(SoftwareSerial *ser, uint8_t resetPin);
-#else
-    BK8000L(NewSoftSerial  *ser, uint8_t resetPin);
-#endif
-#else
     BK8000L(HardwareSerial *ser, uint8_t resetPin);
-#endif
     void begin(uint32_t baudrate = 9600);
     ~BK8000L();
 
@@ -155,16 +133,7 @@ class BK8000L
     void resetHigh();
     void resetLow();
 
-
-#if  defined(USE_SW_SERIAL)
-#if ARDUINO >= 100
-    SoftwareSerial *btSerial;
-#else
-    NewSoftSerial  *btSerial;
-#endif
-#else
-    HardwareSerial *btSerial;
-#endif
+HardwareSerial *btSerial;
 
 };
 

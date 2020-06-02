@@ -1,29 +1,6 @@
-/*
-        GNU GPL v3
-        (C) Tomas Kovacik [nail at nodomain dot sk]
-        https://github.com/tomaskovacik/
-
-	BK8000L module library
-*/
-
 #include "BK8000L.h"
-#include <Arduino.h>
 
-#if defined(USE_SW_SERIAL)
-#include <SoftwareSerial.h>
-#endif
-
-
-
-#if defined(USE_SW_SERIAL)
-#if ARDUINO >= 100
-BK8000L::BK8000L(SoftwareSerial *ser, uint8_t resetPin)
-#else
-BK8000L::BK8000L(NewSoftSerial *ser, uint8_t resetPin)
-#endif
-#else
 BK8000L::BK8000L(HardwareSerial *ser, uint8_t resetPin)
-#endif
 {
   btSerial = ser;
   _reset=resetPin;
@@ -54,7 +31,7 @@ void BK8000L::resetHigh(){
 /*
    debug output
 */
-#if defined DEBUG
+#ifndef DEBUG
 void BK8000L::DBG(String text) {
   Serial.print(text);;
 }
@@ -62,7 +39,7 @@ void BK8000L::DBG(String text) {
 
 
 void BK8000L::resetModule(){
-#if defined DEBUG
+#ifndef DEBUG
  DBG(F("Reseting module"));
 #endif
  resetLow();
@@ -71,7 +48,7 @@ void BK8000L::resetModule(){
 }
 
 uint8_t BK8000L::decodeReceivedString(String receivedString) {
-#if defined DEBUG
+#ifndef DEBUG
   DBG(receivedString);
   DBG(F("\n"));
 #endif
@@ -81,12 +58,12 @@ uint8_t BK8000L::decodeReceivedString(String receivedString) {
       PowerState=On;
         if (receivedString[1] == 'D' && receivedString[2] == ':') {
             BT_ADDR = receivedString.substring(5);
-#if defined DEBUG
+#ifndef DEBUG
             DBG(F("BT ADDRESS: ")); DBG(BT_ADDR);
 #endif
         }
         if (receivedString[1] == 'P' && receivedString[2] == 'R' && receivedString[3] == '+'){
-#if defined DEBUG
+#ifndef DEBUG
             DBG(F("SPP data received: ")); DBG(receivedString.substring(5));
 #endif
 	    receivedSppData=receivedString.substring(4);
@@ -208,14 +185,14 @@ return 1;
 }
 
 String BK8000L::returnCallerID(String receivedString) {
-#if defined DEBUG
+#ifndef DEBUG
 	DBG(F("Calling: ")); DBG(receivedString.substring(4,(receivedString.length() - 2))); DBG(F("\n"));
 #endif
 	return receivedString.substring(4,(receivedString.length() - 2)); //start at 4 cose: IR-"+123456789" or PR-"+123456789" and one before end to remove " and \0
 }
 
 String BK8000L::returnBtModuleName(String receivedString) {
-#if defined DEBUG
+#ifndef DEBUG
 	DBG(F("Bluetooth module name: ")); DBG(receivedString.substring(4)); DBG(F("\n"));
 #endif
 	return receivedString.substring(4);
@@ -229,7 +206,7 @@ delay(100);
     c = (btSerial -> read());
     if (c == 0xD) {
       if (receivedString == "") { //nothing before enter was received
-#if defined DEBUG
+#ifndef DEBUG
         DBG(F("received only empty string\n running again myself...\n"));
 #endif
         return BK8000L::getNextEventFromBT();
@@ -246,7 +223,7 @@ delay(100);
 uint8_t BK8000L::sendData(String cmd) {
   BK8000L::getNextEventFromBT();
   String Command = "AT+" + cmd + "\r\n";
-#if defined DEBUG
+#ifndef DEBUG
   DBG(F("Sending "));DBG(Command);
 #endif
   delay(100);
@@ -256,7 +233,7 @@ uint8_t BK8000L::sendData(String cmd) {
 uint8_t BK8000L::sendAPTData(String cmd) {
   BK8000L::getNextEventFromBT();
   String Command = "APT+" + cmd + "\r\n";
-#if defined DEBUG
+#ifndef DEBUG
   DBG(F("Sending APT "));DBG(Command);
 #endif
   delay(100);

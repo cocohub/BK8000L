@@ -14,11 +14,9 @@ uint8_t CallState;
 uint8_t MusicState;
 uint8_t PowerState;
 
-SoftwareSerial swSerial(7, 6); //rxPin, txPin, inverse_logic
-
-BK8000L BT(&swSerial, 5);
+//BK8000L BT(&swSerial, 5);
 //example for HW serial, do not forget to comment out "#define USE_SW_SERIAL" line in BK8000L/src/BK8000L.h
-//BK8000L BT(&Serial1, 5);
+BK8000L BT(&Serial1, 5);
 
 void getInitStates() {
   BT.getName();

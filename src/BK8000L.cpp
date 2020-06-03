@@ -1,3 +1,10 @@
+/*
+        GNU GPL v3
+        (C) Tomas Kovacik [nail at nodomain dot sk]
+        https://github.com/tomaskovacik/
+        BK8000L module library
+*/
+
 #include "BK8000L.h"
 
 BK8000L::BK8000L(HardwareSerial *ser, uint8_t resetPin)
